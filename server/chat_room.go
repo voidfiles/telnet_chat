@@ -44,11 +44,9 @@ func (cr *ChatRoom) AddMessage(msg Message) {
 	}()
 }
 
+//Run kicks off a ChatRoom
 func (cr *ChatRoom) Run() {
-	for {
-		select {
-		case msg := <-cr.inboundMessages:
-			cr.AddMessage(msg)
-		}
+	for msg := range cr.inboundMessages {
+		cr.AddMessage(msg)
 	}
 }

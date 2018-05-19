@@ -8,9 +8,6 @@ import (
 	"github.com/rs/zerolog"
 )
 
-// Much of this code is borrowed from
-// https://github.com/kljensen/golang-chat
-
 // ChatServer exposes a ChatRoom via telnet
 type ChatServer struct {
 	clientPool *ClientPool

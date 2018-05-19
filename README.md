@@ -10,10 +10,8 @@ To start I want to make sure I have all the basics covered.
 
 * Config parsing
 * Logging
-*
-Next I want to seperate out the buisness logic of running
-at chat server from the connectivity. I can imagine a future choice to use
-something other than telnet.
+
+Next I want to seperate out the buisness logic of running at chat server from the connectivity. I can imagine a future choice to use something other than telnet.
 
 * ChatRoom
   - This should be in charge of the history of messages
@@ -23,21 +21,31 @@ something other than telnet.
   - It should cleanup broken connections
   - It should listen for inbound messages from Clients and distribute them
   - It should listen for outbound messages and fan them out to Clients
-* TelnetServer
-  - This should listen for new connections and send them to the ClientPool
 * ChatServer
+  - This should listen for new connections and send them to the ClientPool
+* Main
   - This should create an inbound message chan
   - This should create an outbound message chan
-  - This should create a net conn chan
-  - It should create a ClientPool and wire it up to the inbound,outbound, and new conn chan
-  - It should create a ChatRoom and wire it up to the inbound,outbound chans
-  - It should create a TelnetServer and wire it up to the new conn chan
-  - It should then Run the ChatRoom and wait until something dies
+  - It should create a ClientPool and wire it up to the inbound and outbound chans
+  - It should create a ChatRoom and wire it up to the inbound and outbound chans
+  - It should create a ChatServer and wire it up to the ClientPool
+  - It should then run the ClientPool, ChatRoom and ChatServer
+
+## Considerations
+
+If this were going to be something I would put into production I would consider a few things.
+
+* Persistance
+  - All the data is lost the second the server shuts down
+  - If it was running on a single instance I might consider somethign like boltdb
+* Bounds
+  - I haven't fully vetted the project for bounds
+  - I think their might be a few unbounded operations
+    - Specificaly the client fan out
 
 ## Getting Started
 
-This will install dependencies. You'll be able to run tests and
-build the codebase afterwards.
+This will install dependencies. You'll be able to run tests and build the codebase afterwards.
 
 ```bash
 make init
@@ -54,3 +62,7 @@ To build
 ```bash
 make build
 ```
+
+# Notes
+
+Writing a telnet server is new for me. So, I used [golang-chat](https://github.com/kljensen/golang-chat) as inspiration for how to create a telnet server.
