@@ -1,5 +1,7 @@
 # Telnet Chat
 
+[![CircleCI](https://circleci.com/gh/voidfiles/telnet_chat.svg?style=svg)](https://circleci.com/gh/voidfiles/telnet_chat)
+
 A Simple chat server, a toy.
 
 ## Implmentation Details
