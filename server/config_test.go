@@ -10,9 +10,11 @@ import (
 
 func TestParseConf(t *testing.T) {
 	type conf struct {
-		port    string
-		ip      string
-		logPath string
+		telnetPort string
+		telnetIp   string
+		httpPort   string
+		httpIp     string
+		logPath    string
 	}
 
 	var parseTests = []struct {
@@ -21,22 +23,24 @@ func TestParseConf(t *testing.T) {
 		config   conf
 	}{
 		{
-			`ip = 0.0.0.1`,
-			"config failed: Near line 1 (last key parsed 'ip'): Invalid float value: \"0.0.0.1\"",
+			`telnetIp = 0.0.0.1`,
+			"config failed: Near line 1 (last key parsed 'telnetIp'): Invalid float value: \"0.0.0.1\"",
 			conf{},
 		}, {
-			`port = "9002"
-      ip = "0.0.0.2"
+			`telnetPort = "9002"
+      telnetIp = "0.0.0.2"
+			httpPort = "90020"
+      httpIp = "0.0.0.2"
       logPath = "/tmp/test/awesome/2"`,
 			"",
 			conf{
-				"9002", "0.0.0.2", "/tmp/test/awesome/2",
+				"9002", "0.0.0.2", "90020", "0.0.0.2", "/tmp/test/awesome/2",
 			},
 		}, {
-			`port = "9003"`,
+			`telnetPort = "9003"`,
 			"",
 			conf{
-				"9003", "", "",
+				"9003", "", "", "", "",
 			},
 		},
 	}
@@ -47,8 +51,8 @@ func TestParseConf(t *testing.T) {
 		if pt.errorMsg != "" {
 			assert.EqualError(t, err, pt.errorMsg)
 		} else {
-			assert.Equal(t, pt.config.port, config.Port)
-			assert.Equal(t, pt.config.ip, config.IP)
+			assert.Equal(t, pt.config.telnetPort, config.TelnetPort)
+			assert.Equal(t, pt.config.telnetIp, config.TelnetIP)
 			assert.Equal(t, pt.config.logPath, config.LogPath)
 		}
 

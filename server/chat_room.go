@@ -44,7 +44,7 @@ func (cr *ChatRoom) AddMessage(msg Message) {
 	}()
 }
 
-//AddMessage appends a message to the chat room and then broacasts it
+//ListMessages appends a message to the chat room and then broacasts it
 func (cr *ChatRoom) ListMessages() []Message {
 	return cr.history
 }

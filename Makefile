@@ -16,9 +16,6 @@ GO_BUILD_FLAGS  :=-ldflags "${GOLDFLAGS} -X main.BuildVersion=${GITHASH} -X main
 ARTIFACT_NAME   :=$(PROJECT)-$(GITHASH).tar.gz
 ARTIFACT_DIR    :=$(PROJECT_DIR)/_artifacts
 WORKDIR         :=$(PROJECT_DIR)/_workdir
-DATA_DIR        :=$(CW)/data
-MISC_DIR        :=$(CW)/_misc
-TRIPLES_DIR     :=$(CW)/_triples
 WORKDIR 	      :=$(CW)/_work
 
 
@@ -61,3 +58,10 @@ coverage:
 
 test-race:
 	CGO_ENABLED=1 go test -race $(GOPACKAGES)
+
+docs:
+	godoc -http=":6060" && \
+	open "http://localhost:6060/pkg/github.com/voidfiles/telnet_chat/"
+
+run:
+	_work/telnet_chat_darwin_amd64 -configpath ./examples/config.toml

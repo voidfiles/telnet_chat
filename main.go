@@ -18,7 +18,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("%v", config)
 	logfile, err := os.Create(config.LogPath)
 	if err != nil {
 		log.Fatal(fmt.Errorf("Failed to open (%s): %s", config.LogPath, err))
@@ -33,12 +32,15 @@ func main() {
 	clientPool := server.NewClientPool(logger, inboundMessages, outboudMessages)
 	chatRoom := server.NewChatRoom(logger, inboundMessages, outboudMessages)
 	chatServer := server.NewChatServer(logger, config, clientPool)
-	server.NewHttpChatServer(*logger, chatRoom)
+	server.NewHTTPChatServer(*logger, chatRoom)
 
 	go chatRoom.Run()
 	go clientPool.Run()
 	go func() {
-		http.ListenAndServe("localhost:8000", nil)
+		http.ListenAndServe(fmt.Sprintf("%s:%s", config.HTTPIP, config.HTTPPort), nil)
 	}()
+	fmt.Printf("Chat Server is running\n")
+	fmt.Printf("Telnet running at %s:%s\n", config.TelnetIP, config.TelnetPort)
+	fmt.Printf("HTTP Server running at %s:%s\n", config.HTTPIP, config.HTTPPort)
 	chatServer.Listen()
 }

@@ -17,8 +17,6 @@ type ClientPool struct {
 	// allClients keeps track of current connections
 	allClients map[io.ReadWriter]int
 
-	// deadConnections is a channel that handles dead connections
-	deadConnections chan io.ReadWriter
 	// InboundMessage is a message from a client
 	InboundMessage chan Message
 	// BroadcastMessage is a channel you can send messages to all clients on
@@ -36,7 +34,7 @@ func NewClientPool(logger *zerolog.Logger, inbound chan Message, broadcast chan 
 	}
 }
 
-func (cp *ClientPool) listenToConnection(conn io.ReadWriter, clientId int) {
+func (cp *ClientPool) listenToConnection(conn io.ReadWriter, clientID int) {
 	reader := bufio.NewReader(conn)
 	for {
 		incoming, err := reader.ReadString('\n')
@@ -44,12 +42,12 @@ func (cp *ClientPool) listenToConnection(conn io.ReadWriter, clientId int) {
 			break
 		}
 		msg := Message{
-			ClientID: clientId,
+			ClientID: clientID,
 			Sent:     time.Now(),
 			Text:     incoming,
 		}
 		cp.logger.Info().
-			Int("client_id", clientId).
+			Int("client_id", clientID).
 			Str("text", incoming).
 			Msg("incomming message from client")
 		cp.InboundMessage <- msg
@@ -76,27 +74,22 @@ func (cp *ClientPool) RemoveConnection(conn io.ReadWriter) {
 	delete(cp.allClients, conn)
 }
 
+//Run starts the client pool on a loop waiting to distribute messages to clients
 func (cp *ClientPool) Run() {
-	for {
+	for msg := range cp.BroadcastMessage {
+		for conn := range cp.allClients {
 
-		select {
-
-		case msg := <-cp.BroadcastMessage:
-
-			for conn, _ := range cp.allClients {
-
-				go func(conn io.ReadWriter, msg string) {
-					_, err := conn.Write([]byte(msg))
-					if err != nil {
-						cp.RemoveConnection(conn)
-					}
-				}(conn, msg)
-			}
-			cp.logger.Info().
-				Int("num_clients", len(cp.allClients)).
-				Str("text", msg).
-				Msg("message broadcast")
+			go func(conn io.ReadWriter, msg string) {
+				_, err := conn.Write([]byte(msg))
+				if err != nil {
+					cp.RemoveConnection(conn)
+				}
+			}(conn, msg)
 		}
+		cp.logger.Info().
+			Int("num_clients", len(cp.allClients)).
+			Str("text", msg).
+			Msg("message broadcast")
 	}
 
 }

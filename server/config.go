@@ -10,9 +10,11 @@ import (
 
 // Config contains configuration information for the telenet chat.
 type Config struct {
-	Port    string
-	IP      string
-	LogPath string
+	TelnetPort string
+	TelnetIP   string
+	HTTPPort   string
+	HTTPIP     string
+	LogPath    string
 }
 
 // ParseConf will parse a Reader for config information.

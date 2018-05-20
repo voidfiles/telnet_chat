@@ -4,6 +4,42 @@
 
 A Simple chat server, a toy.
 
+## Run
+
+After building you can run the command like this.
+
+```
+_work/telnet_chat_darwin_amd64 -configpath ./examples/config.toml
+```
+
+## Config
+
+Here is an example config file.
+
+```
+ip = "localhost"
+port = "6000"
+logPath = "/tmp/logfile.json"
+```
+
+## Design
+
+**ChatRoom**:
+- Stores a histroy of messages
+- Methods for adding messages and retrieving histroy
+- Communicates via channels
+
+**ClientPool**:
+- Maintains client connections
+- Distributes messages to all clients
+
+**ChatServer**:
+- Listens for inbound telnet connections
+- Passes them to the ClientPool
+
+**HttpServer**:
+- Exposes an http interface to the ChatRoom
+
 ## Implmentation Details
 
 To start I want to make sure I have all the basics covered.
@@ -11,7 +47,7 @@ To start I want to make sure I have all the basics covered.
 * Config parsing
 * Logging
 
-Next I want to seperate out the buisness logic of running at chat server from the connectivity. I can imagine a future choice to use something other than telnet.
+Next I want to seperate out the buisness logic of running a chat server from the connectivity. I can imagine a future choice to use something other than telnet.
 
 * ChatRoom
   - This should be in charge of the history of messages
@@ -23,6 +59,10 @@ Next I want to seperate out the buisness logic of running at chat server from th
   - It should listen for outbound messages and fan them out to Clients
 * ChatServer
   - This should listen for new connections and send them to the ClientPool
+* HttpServer
+  - Should hook into methods provided by ChatRoom
+  - To Expose message history
+  - To allow
 * Main
   - This should create an inbound message chan
   - This should create an outbound message chan

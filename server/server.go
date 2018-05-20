@@ -17,7 +17,7 @@ type ChatServer struct {
 
 //NewChatServer constructs a ChatServer and returns it
 func NewChatServer(logger *zerolog.Logger, config Config, clientPool *ClientPool) *ChatServer {
-	server, err := net.Listen("tcp", fmt.Sprintf("%s:%s", config.IP, config.Port))
+	server, err := net.Listen("tcp", fmt.Sprintf("%s:%s", config.TelnetIP, config.TelnetPort))
 	if err != nil {
 		logger.Fatal().AnErr("error", err).Msg("Failed to launch server")
 		os.Exit(1)

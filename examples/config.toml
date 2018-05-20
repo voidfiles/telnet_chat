@@ -1,0 +1,5 @@
+telnetIp = "localhost"
+telnetPort = "6000"
+httpIp = "localhost"
+httpPort = "8000"
+logPath = "/tmp/logfile.json"

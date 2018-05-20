@@ -10,14 +10,15 @@ import (
 	"github.com/rs/zerolog"
 )
 
-//HttpChatServer exposes some parts of the chat via http
-type HttpChatServer struct {
+//HTTPChatServer exposes some parts of the chat via http
+type HTTPChatServer struct {
 	logger   zerolog.Logger
 	chatRoom *ChatRoom
 }
 
-func NewHttpChatServer(logger zerolog.Logger, chatRoom *ChatRoom) *HttpChatServer {
-	hcs := &HttpChatServer{
+//NewHTTPChatServer creates a ChatServer
+func NewHTTPChatServer(logger zerolog.Logger, chatRoom *ChatRoom) *HTTPChatServer {
+	hcs := &HTTPChatServer{
 		logger:   logger,
 		chatRoom: chatRoom,
 	}
@@ -36,7 +37,7 @@ func NewHttpChatServer(logger zerolog.Logger, chatRoom *ChatRoom) *HttpChatServe
 }
 
 // HandlerAddMessage creates a function that will convert a POST into Message
-func (hcs *HttpChatServer) HandlerAddMessage() http.HandlerFunc {
+func (hcs *HTTPChatServer) HandlerAddMessage() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		b, err := ioutil.ReadAll(r.Body)
 		defer r.Body.Close()
@@ -71,8 +72,8 @@ func (hcs *HttpChatServer) HandlerAddMessage() http.HandlerFunc {
 	}
 }
 
-// HandlerAddMessage creates a function that will convert a POST into Message
-func (hcs *HttpChatServer) ListMessages() http.HandlerFunc {
+// ListMessages creates a function that will convert a POST into Message
+func (hcs *HTTPChatServer) ListMessages() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		messages := hcs.chatRoom.ListMessages()
 		w.Header().Add("Content-Type", "application/json")
