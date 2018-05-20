@@ -1,3 +1,16 @@
+/*Command telnet_chat runs a telnet chat server
+
+You can pass it a config file via arg `-configpath`
+
+It should follow the following format
+
+	telnetIp = "localhost"
+	telnetPort = "6000"
+	httpIp = "localhost"
+	httpPort = "8000"
+	logPath = "/tmp/logfile.json"
+
+*/
 package main
 
 import (
