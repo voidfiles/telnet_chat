@@ -42,6 +42,9 @@ If this were going to be something I would put into production I would consider 
   - I haven't fully vetted the project for bounds
   - I think their might be a few unbounded operations
     - Specificaly the client fan out
+* E2E tests
+  - I think I could fully vet the service e2e
+  - I'd want to build a system to do that
 
 ## Getting Started
 

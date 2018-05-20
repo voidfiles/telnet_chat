@@ -9,9 +9,9 @@ import (
 
 //Message is a message bound for chatRoom
 type Message struct {
-	ClientID int
-	Sent     time.Time
-	Text     string
+	ClientID int       `json:"client_id"`
+	Sent     time.Time `json:"sent"`
+	Text     string    `json:"text"`
 }
 
 //ChatRoom manages a persistant chat
@@ -42,6 +42,11 @@ func (cr *ChatRoom) AddMessage(msg Message) {
 	go func() {
 		cr.outboundMessages <- cr.formatMessage(msg)
 	}()
+}
+
+//AddMessage appends a message to the chat room and then broacasts it
+func (cr *ChatRoom) ListMessages() []Message {
+	return cr.history
 }
 
 //Run kicks off a ChatRoom

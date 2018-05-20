@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/voidfiles/telnet_chat/server"
@@ -32,8 +33,12 @@ func main() {
 	clientPool := server.NewClientPool(logger, inboundMessages, outboudMessages)
 	chatRoom := server.NewChatRoom(logger, inboundMessages, outboudMessages)
 	chatServer := server.NewChatServer(logger, config, clientPool)
+	server.NewHttpChatServer(*logger, chatRoom)
 
 	go chatRoom.Run()
 	go clientPool.Run()
+	go func() {
+		http.ListenAndServe("localhost:8000", nil)
+	}()
 	chatServer.Listen()
 }
