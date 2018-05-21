@@ -12,13 +12,34 @@ After building you can run the command like this.
 _work/telnet_chat_darwin_amd64 -configpath ./examples/config.toml
 ```
 
+or you can use
+
+```
+make run
+```
+
+You can then telnet like this
+
+```
+telnet localhost 6000
+```
+
+You can also use the HTTP server with [httpie](https://httpie.org/).
+
+```
+http POST http://localhost:8000/api/messages client_id:=1 text="A message"
+http GET http://localhost:8000/api/messages
+```
+
 ## Config
 
 Here is an example config file.
 
 ```
-ip = "localhost"
-port = "6000"
+telnetIp = "localhost"
+telnetPort = "6000"
+httpIp = "localhost"
+httpPort = "8000"
 logPath = "/tmp/logfile.json"
 ```
 
