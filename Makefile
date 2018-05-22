@@ -13,9 +13,6 @@ GITBRANCH       :=$(shell git rev-parse --abbrev-ref HEAD)
 BUILDDATE      	:=$(shell date -u +%Y%m%d%H%M)
 GO_LDFLAGS		  ?= -s -w
 GO_BUILD_FLAGS  :=-ldflags "${GOLDFLAGS} -X main.BuildVersion=${GITHASH} -X main.GitHash=${GITHASH} -X main.GitBranch=${GITBRANCH} -X main.BuildDate=${BUILDDATE}"
-ARTIFACT_NAME   :=$(PROJECT)-$(GITHASH).tar.gz
-ARTIFACT_DIR    :=$(PROJECT_DIR)/_artifacts
-WORKDIR         :=$(PROJECT_DIR)/_workdir
 WORKDIR 	      :=$(CW)/_work
 
 
@@ -65,3 +62,6 @@ docs:
 
 run:
 	_work/telnet_chat_darwin_amd64 -configpath ./examples/config.toml
+
+zipit:
+	zip -r /tmp/archive.zip ../
