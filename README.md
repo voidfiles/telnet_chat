@@ -4,6 +4,26 @@
 
 A Simple chat server, a toy.
 
+## Getting Started
+
+This will install dependencies, including [dep](https://github.com/golang/dep) into your $GOPATH.  You'll be able to run tests and build the codebase afterwards.
+
+```bash
+make init
+```
+
+Run the tests
+
+```bash
+make test
+```
+
+To build
+
+```bash
+make build
+```
+
 ## Run
 
 After building you can run the command like this.
@@ -26,9 +46,59 @@ telnet localhost 6000
 
 You can also use the HTTP server with [httpie](https://httpie.org/).
 
+```sh
+$ http --verbose POST http://localhost:8000/api/messages client_id:=1 text="A message"
+
+POST /api/messages HTTP/1.1
+Accept: application/json, */*
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Content-Length: 37
+Content-Type: application/json
+Host: localhost:8000
+User-Agent: HTTPie/0.9.9
+
+{
+    "client_id": 1,
+    "text": "A message"
+}
+
+HTTP/1.1 200 OK
+Content-Length: 79
+Content-Type: application/json
+Date: Tue, 22 May 2018 00:58:54 GMT
+
+{
+    "client_id": 1,
+    "sent": "2018-05-21T18:58:54.226783057-06:00",
+    "text": "A message"
+}
 ```
-http POST http://localhost:8000/api/messages client_id:=1 text="A message"
-http GET http://localhost:8000/api/messages
+
+```
+$ http --verbose GET http://localhost:8000/api/messages
+
+GET /api/messages HTTP/1.1
+Accept: */*
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Host: localhost:8000
+User-Agent: HTTPie/0.9.9
+
+
+
+HTTP/1.1 200 OK
+Content-Length: 81
+Content-Type: application/json
+Date: Tue, 22 May 2018 00:59:44 GMT
+
+[
+    {
+        "client_id": 1,
+        "sent": "2018-05-21T18:58:54.226783057-06:00",
+        "text": "A message"
+    }
+]
 ```
 
 ## Config
@@ -46,8 +116,8 @@ logPath = "/tmp/logfile.json"
 ## Design
 
 **ChatRoom**:
-- Stores a histroy of messages
-- Methods for adding messages and retrieving histroy
+- Stores a history of messages
+- Methods for adding messages and retrieving history
 - Communicates via channels
 
 **ClientPool**:
@@ -68,7 +138,7 @@ To start I want to make sure I have all the basics covered.
 * Config parsing
 * Logging
 
-Next I want to seperate out the buisness logic of running a chat server from the connectivity. I can imagine a future choice to use something other than telnet.
+Next I want to separate out the business logic and state of the chat server from the server. I can imagine a future choice to use something other than telnet as the connection protocol.
 
 * ChatRoom
   - This should be in charge of the history of messages
@@ -96,36 +166,24 @@ Next I want to seperate out the buisness logic of running a chat server from the
 
 If this were going to be something I would put into production I would consider a few things.
 
-* Persistance
+* Persistence
   - All the data is lost the second the server shuts down
-  - If it was running on a single instance I might consider somethign like boltdb
+  - If it was running on a single instance I might consider something like boltDB, or sqllite
 * Bounds
   - I haven't fully vetted the project for bounds
   - I think their might be a few unbounded operations
-    - Specificaly the client fan out
+    - Specifically the client fan out
 * E2E tests
   - I think I could fully vet the service e2e
   - I'd want to build a system to do that
-
-## Getting Started
-
-This will install dependencies. You'll be able to run tests and build the codebase afterwards.
-
-```bash
-make init
-```
-
-Run the tests
-
-```bash
-make test
-```
-
-To build
-
-```bash
-make build
-```
+* HTTP Interface
+  - I am not happy with my implementation
+  - Frankly, I don't feel like I've ever nailed HTTP in go, but given a few iterations I think I could figure it out.
+    - Mostly around patterns, good error handling, middleware, logging, stats, etc.
+* Documentation
+  - I feel like documentation should be used, and that use should guide its implementation. Every organization does it a little differently. In order to nail docs I would want to understand the goals of my organization, and then understand how documentation can best serve those goals.
+* Stats
+  - Again, different per org. I know in Go Prometheus is a common pattern, but I've also used statsd. I want to understand what the prevailing pattern is.
 
 # Notes
 
